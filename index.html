@@ -769,35 +769,35 @@ function buildItemHTML(item) {
   const isSoldOut = item.status === 'live' && item.stock <= 0;
 
   const artInner = item.img
-    ? `<img src="$${item.img}" alt="$${item.name}" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0${isSoon ? ';filter:grayscale(.6) brightness(.6)' : ''}"/>`
+    ? `<img src="${item.img}" alt="${item.name}" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0${isSoon ? ';filter:grayscale(.6) brightness(.6)' : ''}"/>`
     : `<svg width="48" height="48" viewBox="0 0 56 56" fill="none"><ellipse cx="28" cy="37" rx="18" ry="12" fill="#3D2408"/><ellipse cx="28" cy="31" rx="15" ry="9" fill="#8B4513"/><ellipse cx="28" cy="29" rx="13" ry="8" fill="#A0522D"/></svg>`;
 
   const stockColor = item.stock <= 0 ? 'out' : item.stock <= 5 ? 'low' : '';
-  const stockText  = item.stock <= 0 ? 'Sold out' : item.stock <= 5 ? `Only $${item.stock} left` : `$${item.stock} available`;
+  const stockText  = item.stock <= 0 ? 'Sold out' : item.stock <= 5 ? `Only ${item.stock} left` : `${item.stock} available`;
 
   const footerRight = isSoon
     ? `<div class="coming-soon-tag"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>Coming soon</div>`
     : isSoldOut
       ? `<div class="sold-out-tag"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>Sold out</div>`
-      : `<button class="add-btn" onclick="addItem('$${item.id}')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add</button>`;
+      : `<button class="add-btn" onclick="addItem('${item.id}')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add</button>`;
 
   const itemClass = isSoon || isSoldOut ? 'menu-item sold-out-item' : 'menu-item';
   const badgeKey  = isSoon ? 'soon' : item.badge;
 
-  return `<div class="$${itemClass}" id="mi-$${item.id}">
+  return `<div class="${itemClass}" id="mi-${item.id}">
     <div class="menu-item-art">
-      $${artInner}
-      <span class="menu-item-badge $${badgeMap[badgeKey]}">$${badgeLabelMap[badgeKey]}</span>
+      ${artInner}
+      <span class="menu-item-badge ${badgeMap[badgeKey]}">${badgeLabelMap[badgeKey]}</span>
     </div>
     <div class="menu-item-body">
       <div>
-        <div class="menu-item-name">$${item.name}</div>
-        ${!isSoon ? `<div class="item-stock"><div class="item-stock-dot $${stockColor}"></div><span style="color:${stockColor==='out'?'var(--red)':stockColor==='low'?'#E89A30':'var(--text-3)'}">$${stockText}</span></div>` : ''}
-        <div class="menu-item-desc">$${item.desc}</div>
+        <div class="menu-item-name">${item.name}</div>
+        ${!isSoon ? `<div class="item-stock"><div class="item-stock-dot ${stockColor}"></div><span style="color:${stockColor==='out'?'var(--red)':stockColor==='low'?'#E89A30':'var(--text-3)'}">${stockText}</span></div>` : ''}
+        <div class="menu-item-desc">${item.desc}</div>
       </div>
       <div class="menu-item-footer">
         <div class="price" style="${isSoon||isSoldOut?'opacity:.4':''}">&amp;#8358;${item.price.toLocaleString()}</div>
-        $${footerRight}
+        ${footerRight}
       </div>
     </div>
   </div>`;
@@ -855,7 +855,7 @@ function renderCart() {
     html += `<div class="cart-row">
       <div class="cart-row-left">
         <span class="cart-row-name">${name}</span>
-        <span class="cart-row-qty">&times;$${counts[id]}</span>
+        <span class="cart-row-qty">&times;${counts[id]}</span>
       </div>
       <div style="display:flex;align-items:center;gap:10px">
         <span class="cart-row-price">&#8358;${sub.toLocaleString()}</span>
@@ -929,7 +929,7 @@ function buildOrderSummary() {
   return Object.keys(counts).map(id => {
     const item = menuItems.find(i=>i.id===id);
     const n = item ? item.name : id;
-    return `$${n} \u00d7$${counts[id]} = \u20a6${(prices[id]*counts[id]).toLocaleString()}`;
+    return `${n} \u00d7${counts[id]} = \u20a6${(prices[id]*counts[id]).toLocaleString()}`;
   }).join(', ');
 }
 
@@ -939,13 +939,13 @@ function fireWhatsApp(name, address, phone, note, ref, paid) {
   const lines = Object.keys(counts).map(id => {
     const item = menuItems.find(i=>i.id===id);
     const n = item ? item.name : id;
-    return `  \u2022 $${n} \u00d7$${counts[id]} = \u20a6${(prices[id]*counts[id]).toLocaleString()}`;
+    return `  \u2022 ${n} \u00d7${counts[id]} = \u20a6${(prices[id]*counts[id]).toLocaleString()}`;
   }).join('\n');
   const tag = isPreorder ? '[PRE-ORDER FOR TOMORROW]\n' : '';
   let msg = `Hello Jacy! ${tag}\n${lines}\n\n*Total: \u20a6${cartTotal.toLocaleString()}*\n\n`;
-  if (paid && ref) msg += `Payment ref: $${ref} (Paystack)\n`;
+  if (paid && ref) msg += `Payment ref: ${ref} (Paystack)\n`;
   if (!paid) msg += `Payment: Bank transfer to ${document.getElementById('pay-acct').textContent}\n`;
-  msg += `Name: ${name}\nDelivery: $${address}`;
+  msg += `Name: ${name}\nDelivery: ${address}`;
   if (phone) msg += `\nPhone: ${phone}`;
   if (note) msg += `\n\nNote: ${note}`;
   msg += '\n\nPlease confirm. Thank you!';
@@ -1030,25 +1030,25 @@ function renderAdminItems() {
   list.innerHTML = menuItems.map((item,idx) => `
     <div class="menu-item-admin">
       <div class="mia-top">
-        <span class="mia-name">$${item.name}</span>
+        <span class="mia-name">${item.name}</span>
         <label class="toggle" title="${item.status==='live'?'Live':'Coming soon'}">
-          <input type="checkbox" $${item.status==='live'?'checked':''} onchange="toggleItemStatus($${idx},this.checked)"/>
+          <input type="checkbox" ${item.status==='live'?'checked':''} onchange="toggleItemStatus(${idx},this.checked)"/>
           <div class="toggle-track"></div>
           <div class="toggle-thumb"></div>
         </label>
       </div>
       <div class="mia-stock-row">
         <span class="mia-stock-label">Stock today</span>
-        <input class="mia-stock-input" type="number" min="0" max="999" value="$${item.stock}" id="admin-stock-$${item.id}"/>
+        <input class="mia-stock-input" type="number" min="0" max="999" value="${item.stock}" id="admin-stock-${item.id}"/>
         <span style="font-size:11px;color:var(--text-3)">/ max</span>
-        <input class="mia-stock-input" type="number" min="0" max="999" value="$${item.maxStock}" id="admin-max-$${item.id}" placeholder="max"/>
+        <input class="mia-stock-input" type="number" min="0" max="999" value="${item.maxStock}" id="admin-max-${item.id}" placeholder="max"/>
       </div>
-      <label class="mia-upload" for="admin-img-$${item.id}">
+      <label class="mia-upload" for="admin-img-${item.id}">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
         Change photo
       </label>
-      <input type="file" id="admin-img-$${item.id}" accept="image/*" style="display:none" onchange="handleAdminImg(event,$${idx})"/>
-      ${idx >= 3 ? `<button class="admin-btn admin-btn-ghost admin-btn-danger" style="margin-top:8px;padding:7px" onclick="deleteItem($${idx})">Remove item</button>` : ''}
+      <input type="file" id="admin-img-${item.id}" accept="image/*" style="display:none" onchange="handleAdminImg(event,${idx})"/>
+      ${idx >= 3 ? `<button class="admin-btn admin-btn-ghost admin-btn-danger" style="margin-top:8px;padding:7px" onclick="deleteItem(${idx})">Remove item</button>` : ''}
     </div>
   `).join('');
 }
@@ -1169,32 +1169,32 @@ function renderSurveyResults() {
   const freeTexts = surveyData.filter(r=>r.free).map(r=>`<div style="font-size:12px;color:var(--text-2);padding:4px 0;border-bottom:0.5px solid var(--border);font-weight:300">&ldquo;${r.free}&rdquo;</div>`).join('');
 
   area.innerHTML = `
-    <div style="font-size:12px;color:var(--text-3);margin-bottom:16px;font-weight:300">$${total} response${total!==1?'s':''} total</div>
+    <div style="font-size:12px;color:var(--text-3);margin-bottom:16px;font-weight:300">${total} response${total!==1?'s':''} total</div>
     <div class="survey-result-item">
       <div class="survey-result-q">What they want to order</div>
       ${Object.entries(foodCounts).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`
         <div class="survey-bar-row">
-          <div class="survey-bar-label">$${k}</div>
+          <div class="survey-bar-label">${k}</div>
           <div class="survey-bar-track"><div class="survey-bar-fill" style="width:${Math.round(v/maxFood*100)}%"></div></div>
-          <div class="survey-bar-count">$${v}</div>
+          <div class="survey-bar-count">${v}</div>
         </div>`).join('')}
     </div>
     <div class="survey-result-item">
       <div class="survey-result-q">How often they buy food</div>
       ${Object.entries(freqCounts).map(([k,v])=>`
         <div class="survey-bar-row">
-          <div class="survey-bar-label">$${k}</div>
+          <div class="survey-bar-label">${k}</div>
           <div class="survey-bar-track"><div class="survey-bar-fill" style="width:${Math.round(v/maxFreq*100)}%"></div></div>
-          <div class="survey-bar-count">$${v}</div>
+          <div class="survey-bar-count">${v}</div>
         </div>`).join('')}
     </div>
     <div class="survey-result-item">
       <div class="survey-result-q">Price range preference</div>
       ${Object.entries(priceCounts).map(([k,v])=>`
         <div class="survey-bar-row">
-          <div class="survey-bar-label">$${k}</div>
+          <div class="survey-bar-label">${k}</div>
           <div class="survey-bar-track"><div class="survey-bar-fill" style="width:${Math.round(v/maxPrice*100)}%"></div></div>
-          <div class="survey-bar-count">$${v}</div>
+          <div class="survey-bar-count">${v}</div>
         </div>`).join('')}
     </div>
     ${freeTexts ? `<div class="survey-result-item"><div class="survey-result-q">Open suggestions</div>${freeTexts}</div>` : ''}
